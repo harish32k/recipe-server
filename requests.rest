@@ -1,0 +1,29 @@
+POST http://localhost:4000/api/auth/signin
+Content-Type: application/json
+
+{
+    "username": "ada",
+    "password": "ada123"
+}
+
+###
+
+GET http://localhost:4000/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTU4MDc1NmZlZDZiYjNiNTAxYzU1ZjIiLCJ1c2VybmFtZSI6ImFkYSIsInJvbGUiOiJDSEVGIiwiaWF0IjoxNzAxMDU1NTUxLCJleHAiOjE3MDEwNTU2MTF9.XgHtBzOFoRpQGnF_X9BC79r3A8LuxvhjMeUGkn9Ik4w
+
+###
+
+DELETE http://localhost:4000/api/auth/signout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTU4MDc1NmZlZDZiYjNiNTAxYzU1ZjIiLCJ1c2VybmFtZSI6ImFkYSIsInJvbGUiOiJDSEVGIiwiaWF0IjoxNzAxMDU1NTUxLCJleHAiOjE3MDEwNTU2MTF9.XgHtBzOFoRpQGnF_X9BC79r3A8LuxvhjMeUGkn9Ik4w
+
+
+###
+
+POST http://localhost:4000/api/auth/token
+Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTU4MDc1NmZlZDZiYjNiNTAxYzU1ZjIiLCJ1c2VybmFtZSI6ImFkYSIsInJvbGUiOiJDSEVGIiwiaWF0IjoxNzAxMDU1NTE5LCJleHAiOjE3MDEwNTU2Mzl9.nfdwCywtam4_O2o0E2wVTfeNEXGidF-41CGTTzPB2Ws"
+}
+
+###
