@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import UserRoutes from "./routes/users.js";
 import AuthRoutes from "./routes/auth.js";
 import cookieParser from "cookie-parser";
+import MealRoutes from "./routes/mealDB.js";
 
 dotenv.config();
 
@@ -20,29 +21,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-// app.use(authenticationMiddleware);
 
 UserRoutes(app);
 AuthRoutes(app);
+MealRoutes(app);
 
 app.get("/", (req, res) => {
   res.send("Welcome to Recipe app API!");
 });
-
-// app.get("/posts", authenticateToken, (req, res) => {
-//   res.json(req.user);
-// });
-
-// function authenticateToken(req, res, next) {
-//   const authHeader = req.headers["authorization"];
-//   const token = authHeader && authHeader.split(" ")[1];
-//   if (token == null) return res.sendStatus(401);
-
-//   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-//     if (err) return res.sendStatus(403);
-//     req.user = user;
-//     next();
-//   });
-// }
 
 app.listen(4000);

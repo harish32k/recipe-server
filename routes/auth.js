@@ -68,7 +68,7 @@ function AuthRoutes(app) {
     });
   };
 
-  const posts = async (req, res) => {
+  const fetchUserdetails = async (req, res) => {
     res.json(req.user);
   };
 
@@ -95,34 +95,25 @@ function AuthRoutes(app) {
     const token = authHeader && authHeader.split(" ")[1];
     if (token == null) return res.sendStatus(401);
 
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-      if (err) return res.sendStatus(403);
+    try {
+      const user = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
       req.user = user;
-    });
 
-    const accessToken = await tokenDao.findByAccessToken(token);
-    if (!accessToken) {
-      return res.sendStatus(401);
-    } else {
-      next();
+      const accessToken = await tokenDao.findByAccessToken(token);
+      if (!accessToken) {
+        return res.sendStatus(401);
+      } else {
+        next();
+      }
+    } catch (error) {
+      return res.sendStatus(403);
     }
-    // try {
-    //   const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    //   const accessToken = tokenDao.findByAccessToken(token);
-    //   if (!accessToken) {
-    //     return res.status(401).json({ message: "Unauthorized" });
-    //   }
-    //   req.user = decoded.user;
-    //   next();
-    // } catch (err) {
-    //   return res.sendStatus(403);
-    // }
   };
 
   app.delete("/api/auth/signout", authenticateToken, signout);
   app.post("/api/auth/signin", signin);
   app.post("/api/auth/token", token);
-  app.get("/api/posts", authenticateToken, posts);
+  app.get("/api/user", authenticateToken, fetchUserdetails);
 }
 
 function generateAccessToken(user) {
