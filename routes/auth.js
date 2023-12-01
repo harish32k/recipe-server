@@ -38,8 +38,13 @@ function AuthRoutes(app) {
       }
     }
 
-    await tokenDao.createToken(accessToken, refreshToken, userObj._id);
+    console.log("Refresh token: ", refreshToken);
 
+    try {
+      await tokenDao.createToken(accessToken, refreshToken, userObj._id);
+    } catch (err) {
+      console.log(err);
+    }
     // res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true });
     res.json({
       accessToken: accessToken,
