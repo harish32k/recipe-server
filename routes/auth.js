@@ -15,8 +15,8 @@ function AuthRoutes(app) {
     const { username, password } = req.body;
     console.log(username, password);
     const user = await userDao.findUserByCredentials(username, password);
-    if (!user) {
-      res.status(401).json({ message: "Invalid credentials" });
+    if (!user || user == null) {
+      return res.status(401).json({ message: "Invalid credentials" });
     }
     const userObj = { _id: user._id, username: user.username, role: user.role };
     const accessToken = generateAccessToken(userObj);
@@ -118,7 +118,7 @@ function AuthRoutes(app) {
   app.delete("/api/auth/signout", authenticateToken, signout);
   app.post("/api/auth/signin", signin);
   app.post("/api/auth/token", token);
-  app.get("/api/user", authenticateToken, fetchUserdetails);
+  app.get("/api/auth/user", authenticateToken, fetchUserdetails);
 }
 
 function generateAccessToken(user) {
