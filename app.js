@@ -7,6 +7,7 @@ import AuthRoutes from "./routes/auth.js";
 import cookieParser from "cookie-parser";
 import MealRoutes from "./routes/mealDB.js";
 import RecipeRoutes from "./routes/recipes.js";
+import LikeRoutes from "./routes/likes.js";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ UserRoutes(app);
 AuthRoutes(app);
 MealRoutes(app);
 RecipeRoutes(app);
+LikeRoutes(app);
 
 app.get("/", (req, res) => {
   res.send("Welcome to Recipe app API!");
