@@ -7,7 +7,7 @@ const likeSchema = new mongoose.Schema({
     required: true
   },
   recipeId: {
-    type: String, // Using Mixed type to allow both ObjectId and string
+    type: mongoose.Schema.Types.Mixed, // Using Mixed type to allow both ObjectId and string
     required: true
   },
   likedTime: Date
