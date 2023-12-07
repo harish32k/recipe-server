@@ -35,7 +35,7 @@ const transformMealData = (meals) => {
         };
 
         // Combine ingredients and measures into respective arrays
-        console.log(meal);
+        //console.log(meal);
         for (let i = 1; i <= 20; i++) {
             const ingredient = meal[`strIngredient${i}`];
             const measure = meal[`strMeasure${i}`];
@@ -54,7 +54,7 @@ const transformMealData = (meals) => {
 
 async function fetchMealDetails(mealId) {
     const response = await axios.get(`${MEAL_API}/lookup.php?i=${mealId}`);
-    return response.data.meals;
+    return response.data.meals[0];
 }
 
 async function fetchRecipeFromIdArray(meals) {
@@ -62,6 +62,7 @@ async function fetchRecipeFromIdArray(meals) {
     for (const meal of meals) {
         const mealId = meal.idMeal;
         const mealDetails = await fetchMealDetails(mealId);
+        //console.log(mealDetails);
         newArray.push(mealDetails);
     }
     return newArray;
@@ -71,6 +72,7 @@ export const getMealById = async (id) => {
     try {
         //console.log(`${MEAL_API}/lookup.php?i=${id}`);
         const response = await axios.get(`${MEAL_API}/lookup.php?i=${id}`);
+        if (!response.data.meals) { return [] };
         return transformMealData(response.data.meals);
     } catch (err) {
         return { message: "error" };
@@ -80,6 +82,7 @@ export const getMealById = async (id) => {
 export const getMealByName = async (name) => {
     try {
         const response = await axios.get(`${MEAL_API}/search.php?s=${name}`);
+        if (!response.data.meals) { return [] };
         return transformMealData(response.data.meals);
     } catch (err) {
         return { message: "error" };
@@ -89,6 +92,7 @@ export const getMealByName = async (name) => {
 export const getMealByFirstLetter = async (letter) => {
     try {
         const response = await axios.get(`${MEAL_API}/search.php?f=${letter}`);
+        if (!response.data.meals) { return [] };
         return transformMealData(response.data.meals);
     } catch (err) {
         return { message: err.message };
@@ -99,6 +103,7 @@ export const getRandomMeal = async () => {
     console.log("getRandomMeal");
     try {
         const response = await axios.get(`${MEAL_API}/random.php`);
+        if (!response.data.meals) { return [] };
         return transformMealData(response.data.meals);
     } catch (err) {
         return { message: err.message };
@@ -108,6 +113,7 @@ export const getRandomMeal = async () => {
 export const getMealCategories = async () => {
     try {
         const response = await axios.get(`${MEAL_API}/categories.php`);
+        if (!response.data.meals) { return [] };
         return transformMealData(response.data.meals);
     } catch (err) {
         return { message: err.message };
@@ -117,6 +123,7 @@ export const getMealCategories = async () => {
 export const filterByCategory = async (category) => {
     try {
         const response = await axios.get(`${MEAL_API}/filter.php?c=${category}`);
+        if (!response.data.meals) { return [] };
         const results = await fetchRecipeFromIdArray(response.data.meals);
         return transformMealData(results);
     } catch (err) {
@@ -127,8 +134,9 @@ export const filterByCategory = async (category) => {
 export const filterByArea = async (area) => {
     try {
         const response = await axios.get(`${MEAL_API}/filter.php?a=${area}`);
+        if (!response.data.meals) { return [] };
         const results = await fetchRecipeFromIdArray(response.data.meals);
-        console.log(transformMealData(results))
+        //console.log(transformMealData(results))
         return transformMealData(results);
     } catch (err) {
         return { message: err.message };

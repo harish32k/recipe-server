@@ -13,7 +13,7 @@ function LikeRoutes(app) {
     };
     const removeLike = async (req, res) => {
         const status = await dao.removeLike(req.body.recipeId, req.body.userId);
-        console.log(req.body);
+        //console.log(req.body);
         //const status = {recipeId  : req.body.recipeId, userId : req.body.userId}
         res.json(status);
     };

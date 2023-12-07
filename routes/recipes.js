@@ -33,29 +33,49 @@ async function addLikesAndCommentsCount(recipes) {
 function RecipeRoutes(app) {
 
     const createRecipe = async (req, res) => {
-        const recipe = await local.createRecipe(req.body);
-        res.json(recipe);
+        try {
+            const recipe = await local.createRecipe(req.body);
+            res.json(recipe);
+        }
+        catch (err) {
+            res.status(400).json({ message: err.message });
+        }
     };
     const deleteRecipe = async (req, res) => {
-        const status = await local.deleteRecipe(req.params._id);
-        res.json(status);
+        try {
+            const status = await local.deleteRecipe(req.params._id);
+            res.json(status);
+        }
+        catch (err) {
+            res.status(400).json({ message: err.message });
+        }
     };
     const updateRecipe = async (req, res) => {
-        const recipe = await local.updateRecipe(req.params._id, req.body);
-        res.json(recipe);
+        try {
+            const recipe = await local.updateRecipe(req.params._id, req.body);
+            res.json(recipe);
+        }
+        catch (err) {
+            res.status(400).json({ message: err.message });
+        }
     };
     const findAllRecipes = async (req, res) => {
-        const recipes = await local.findAllRecipes();
-        const result = await addLikesAndCommentsCount(recipes);
-        res.json(result);
+        try {
+            const recipes = await local.findAllRecipes();
+            const result = await addLikesAndCommentsCount(recipes);
+            res.json(result);
+        }
+        catch (err) {
+            res.status(400).json({ message: err.message });
+        }
     };
     const findRecipeById = async (req, res) => {
         try {
             const recipe = await local.findRecipeById(req.params._id);
+            res.json(recipe);
         }
         catch (error) {
             const externRecipe = await mealDB.getMealById(req.params._id);
-            //console.log(externRecipe);
             if (externRecipe) {
                 res.json(externRecipe[0]);
             }
@@ -63,44 +83,56 @@ function RecipeRoutes(app) {
                 res.status(401).json({ message: "Recipe not found." });
             }
         }
-
     };
     const findRecipesByName = async (req, res) => {
-        const recipes = await local.findRecipesByName(req.params.inputString);
-        const mutableRecipes = convertToMutableObjects(recipes);
-        const externRecipe = await mealDB.getMealByName(req.params.inputString);
-        //console.log(externRecipe);
-        const mergedRecipes = [...mutableRecipes, ...externRecipe];
-        const result = await addLikesAndCommentsCount(mergedRecipes);
-        res.json(result);
+        try {
+            const recipes = await local.findRecipesByName(req.params.inputString);
+            const mutableRecipes = convertToMutableObjects(recipes);
+            const externRecipes = await mealDB.getMealByName(req.params.inputString);
+            const mergedRecipes = [...mutableRecipes, ...externRecipes];
+            const result = await addLikesAndCommentsCount(mergedRecipes);
+            res.json(result);
+        }
+        catch (err) {
+            res.status(400).json({ message: err.message });
+        }
     };
     const findRecipesByArea = async (req, res) => {
-        const recipes = await local.findRecipesByArea(req.params.area);
-        const mutableRecipes = convertToMutableObjects(recipes);
-        const externRecipe = await mealDB.filterByArea(req.params.area);
-        // res.json(externRecipe);
-        const mergedRecipes = [...mutableRecipes, ...externRecipe];
-        const result = await addLikesAndCommentsCount(mergedRecipes);
-        res.json(result);
+        try {
+            const recipes = await local.findRecipesByArea(req.params.area);
+            const mutableRecipes = convertToMutableObjects(recipes);
+            const externRecipes = await mealDB.filterByArea(req.params.area);
+            const mergedRecipes = [...mutableRecipes, ...externRecipes];
+            const result = await addLikesAndCommentsCount(mergedRecipes);
+            res.json(result);
+        }
+        catch (err) {
+            res.status(400).json({ message: err.message });
+        }
     };
     const findRecipesByCategory = async (req, res) => {
-        const recipes = await local.findRecipesByCategory(req.params.category);
-        const mutableRecipes = convertToMutableObjects(recipes);
-        const externRecipe = await mealDB.filterByCategory(req.params.category);
-        const mergedRecipes = [...mutableRecipes, ...externRecipe];
-        const result = await addLikesAndCommentsCount(mergedRecipes);
-        res.json(result);
+        try {
+            const recipes = await local.findRecipesByCategory(req.params.category);
+            const mutableRecipes = convertToMutableObjects(recipes);
+            const externRecipes = await mealDB.filterByCategory(req.params.category);
+            const mergedRecipes = [...mutableRecipes, ...externRecipes];
+            const result = await addLikesAndCommentsCount(mergedRecipes);
+            res.json(result);
+        }
+        catch (err) {
+            res.status(400).json({ message: err.message });
+        }
     };
 
 
     app.post("/api/recipes", createRecipe);
     app.get("/api/recipes", findAllRecipes);
-    app.get("/api/recipes/:_id", findRecipeById);
     app.get("/api/recipes/name/:inputString", findRecipesByName);
     app.get("/api/recipes/category/:category", findRecipesByCategory);
     app.get("/api/recipes/area/:area", findRecipesByArea);
-    app.put("/api/recipes/:_id", updateRecipe);
-    app.delete("/api/recipes/:_id", deleteRecipe);
+    app.get("/api/recipes/id/:_id", findRecipeById);
+    app.put("/api/recipes/id/:_id", updateRecipe);
+    app.delete("/api/recipes/id/:_id", deleteRecipe);
 }
 
 export default RecipeRoutes;
