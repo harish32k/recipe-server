@@ -97,11 +97,26 @@ function RecipeRoutes(app) {
             res.status(400).json({ message: err.message });
         }
     };
-    const findRecipesByArea = async (req, res) => {
+
+    // const findRecipesByArea = async (req, res) => {
+    //     try {
+    //         const recipes = await local.findRecipesByArea(req.params.area);
+    //         const mutableRecipes = convertToMutableObjects(recipes);
+    //         const externRecipes = await mealDB.filterByArea(req.params.area);
+    //         const mergedRecipes = [...mutableRecipes, ...externRecipes];
+    //         const result = await addLikesAndCommentsCount(mergedRecipes);
+    //         res.json(result);
+    //     }
+    //     catch (err) {
+    //         res.status(400).json({ message: err.message });
+    //     }
+    // };
+
+    const findRecipesByAreaSimple = async (req, res) => {
         try {
-            const recipes = await local.findRecipesByArea(req.params.area);
+            const recipes = await local.findRecipesByAreaSimple(req.params.area);
             const mutableRecipes = convertToMutableObjects(recipes);
-            const externRecipes = await mealDB.filterByArea(req.params.area);
+            const externRecipes = await mealDB.filterByAreaSimple(req.params.area);
             const mergedRecipes = [...mutableRecipes, ...externRecipes];
             const result = await addLikesAndCommentsCount(mergedRecipes);
             res.json(result);
@@ -110,11 +125,27 @@ function RecipeRoutes(app) {
             res.status(400).json({ message: err.message });
         }
     };
-    const findRecipesByCategory = async (req, res) => {
+
+    // const findRecipesByCategory = async (req, res) => {
+    //     try {
+    //         const recipes = await local.findRecipesByCategory(req.params.category);
+    //         const mutableRecipes = convertToMutableObjects(recipes);
+    //         const externRecipes = await mealDB.filterByCategory(req.params.category);
+    //         const mergedRecipes = [...mutableRecipes, ...externRecipes];
+    //         const result = await addLikesAndCommentsCount(mergedRecipes);
+    //         res.json(result);
+    //     }
+    //     catch (err) {
+    //         res.status(400).json({ message: err.message });
+    //     }
+    // };
+
+    
+    const findRecipesByCategorySimple = async (req, res) => {
         try {
-            const recipes = await local.findRecipesByCategory(req.params.category);
+            const recipes = await local.findRecipesByCategorySimple(req.params.category);
             const mutableRecipes = convertToMutableObjects(recipes);
-            const externRecipes = await mealDB.filterByCategory(req.params.category);
+            const externRecipes = await mealDB.filterByCategorySimple(req.params.category);
             const mergedRecipes = [...mutableRecipes, ...externRecipes];
             const result = await addLikesAndCommentsCount(mergedRecipes);
             res.json(result);
@@ -128,8 +159,8 @@ function RecipeRoutes(app) {
     app.post("/api/recipes", createRecipe);
     app.get("/api/recipes", findAllRecipes);
     app.get("/api/recipes/name/:inputString", findRecipesByName);
-    app.get("/api/recipes/category/:category", findRecipesByCategory);
-    app.get("/api/recipes/area/:area", findRecipesByArea);
+    app.get("/api/recipes/category/:category", findRecipesByCategorySimple);
+    app.get("/api/recipes/area/:area", findRecipesByAreaSimple);
     app.get("/api/recipes/id/:_id", findRecipeById);
     app.put("/api/recipes/id/:_id", updateRecipe);
     app.delete("/api/recipes/id/:_id", deleteRecipe);

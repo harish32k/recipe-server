@@ -52,6 +52,41 @@ const transformMealData = (meals) => {
     return transformedMeals;
 };
 
+const transformMealDataSimple = (meals) => {
+    const transformedMeals = meals.map((meal) => {
+        const transformedMeal = {
+            _id: meal.idMeal,
+            strMeal: meal.strMeal,
+            //strDrinkAlternate: meal.strDrinkAlternate,
+            // strCategory: meal.strCategory,
+            // strArea: meal.strArea,
+            // strInstructions: meal.strInstructions,
+            strMealThumb: meal.strMealThumb,
+            //strTags: meal.strTags,
+            // strYoutube: meal.strYoutube,
+            //strSource: meal.strSource,
+            //strImageSource: meal.strImageSource,
+            //strCreativeCommonsConfirmed: meal.strCreativeCommonsConfirmed,
+            //dateModified: meal.dateModified,
+            postedTime: Date(2023, 10, 5, 5, 5, 5, 5),
+            //ingredients: [],
+            //measures: [],
+            approved: true,
+            userId: {
+                "_id": "mealDB",
+                "username": "mealDB",
+                "firstName": "MealDB",
+                "lastName": "API"
+            },
+            source: "external",
+        };
+
+        return transformedMeal;
+    });
+
+    return transformedMeals;
+};
+
 async function fetchMealDetails(mealId) {
     const response = await axios.get(`${MEAL_API}/lookup.php?i=${mealId}`);
     return response.data.meals[0];
@@ -120,24 +155,48 @@ export const getMealCategories = async () => {
     }
 };
 
-export const filterByCategory = async (category) => {
+// export const filterByCategory = async (category) => {
+//     try {
+//         const response = await axios.get(`${MEAL_API}/filter.php?c=${category}`);
+//         if (!response.data.meals) { return [] };
+//         const results = await fetchRecipeFromIdArray(response.data.meals);
+//         return transformMealData(results);
+//     } catch (err) {
+//         return { message: err.message };
+//     }
+// };
+
+export const filterByCategorySimple = async (category) => {
     try {
         const response = await axios.get(`${MEAL_API}/filter.php?c=${category}`);
         if (!response.data.meals) { return [] };
-        const results = await fetchRecipeFromIdArray(response.data.meals);
-        return transformMealData(results);
+        //const results = await fetchRecipeFromIdArray(response.data.meals);
+        return transformMealDataSimple(response.data.meals);
     } catch (err) {
         return { message: err.message };
     }
 };
 
-export const filterByArea = async (area) => {
+// export const filterByArea = async (area) => {
+//     try {
+//         const response = await axios.get(`${MEAL_API}/filter.php?a=${area}`);
+//         if (!response.data.meals) { return [] };
+//         const results = await fetchRecipeFromIdArray(response.data.meals);
+//         console.log(transformMealData(results))
+//         return transformMealData(results);
+//     } catch (err) {
+//         return { message: err.message };
+//     }
+// };
+
+
+export const filterByAreaSimple = async (area) => {
     try {
         const response = await axios.get(`${MEAL_API}/filter.php?a=${area}`);
         if (!response.data.meals) { return [] };
         const results = await fetchRecipeFromIdArray(response.data.meals);
         //console.log(transformMealData(results))
-        return transformMealData(results);
+        return transformMealDataSimple(results);
     } catch (err) {
         return { message: err.message };
     }
