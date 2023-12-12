@@ -104,7 +104,7 @@ function LikeRoutes(app) {
 
     app.post("/api/like", addLike);
     app.delete("/api/like/delete", removeLike);
-    app.get("/api/like/users/:userId", getLikedUsers);
+    app.get("/api/like/users/:recipeId", getLikedUsers);
     app.get("/api/like/count/:recipeId", getLikeCount);
     app.get("/api/like/liked-status/recipe/:recipeId/user/:userId", likedStatus);
     app.get("/api/like/user-liked/:userId", getPostsLikedByUser);
