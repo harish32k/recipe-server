@@ -51,7 +51,7 @@ function CommentRoutes(app) {
     };
     const removeComment = async (req, res) => {
         try {
-            const status = await dao.removeComment(req.body._id);
+            const status = await dao.removeComment(req.params._id);
             //console.log(req.body);
             //const status = {recipeId  : req.body.recipeId, userId : req.body.userId}
             res.json(status);
@@ -93,7 +93,7 @@ function CommentRoutes(app) {
 
     app.post("/api/comment/recipe", addComment);
     app.get("/api/comment/recipe/:recipeId", getUserCommentsOnRecipe);
-    app.delete("/api/comment/recipe", removeComment);
+    app.delete("/api/comment/recipe/commentId/:_id", removeComment);
     app.get("/api/comment/count/recipe/:recipeId", getCommentsCountOnRecipe);
     app.get("/api/comment/user/:userId", getAllCommentsByUser);
 }

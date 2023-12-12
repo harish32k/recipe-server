@@ -46,13 +46,13 @@ function LikeRoutes(app) {
             res.json(like);
         }
         catch (error) {
-            res.status(400).json({ error: "Like couldn't be added." });
+            res.status(400).json({ message: error.message });
         }
 
     };
     const removeLike = async (req, res) => {
         try {
-            const status = await dao.removeLike(req.body.recipeId, req.body.userId);
+            const status = await dao.removeLike(req.params.recipeId, req.params.userId);
             //console.log(req.body);
             //const status = {recipeId  : req.body.recipeId, userId : req.body.userId}
             res.json(status);
@@ -103,7 +103,7 @@ function LikeRoutes(app) {
     };
 
     app.post("/api/like", addLike);
-    app.delete("/api/like/delete", removeLike);
+    app.delete("/api/like/delete/recipe/:recipeId/user/:userId", removeLike);
     app.get("/api/like/users/:recipeId", getLikedUsers);
     app.get("/api/like/count/:recipeId", getLikeCount);
     app.get("/api/like/liked-status/recipe/:recipeId/user/:userId", likedStatus);
