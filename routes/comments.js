@@ -35,7 +35,7 @@ async function addRecipeDetails(comments) {
         // Update the comment object with the fetched recipe details
         comment.recipe = recipeDetails; // Assuming the fetched details are stored in 'recipe'
     }
-    return comments;  
+    return comments;
 }
 
 function CommentRoutes(app) {
@@ -47,28 +47,48 @@ function CommentRoutes(app) {
         catch (error) {
             res.status(400).json({ error: "Comment couldn't be added." });
         }
-        
+
     };
     const removeComment = async (req, res) => {
-        const status = await dao.removeComment(req.body.recipeId, req.body.userId);
-        //console.log(req.body);
-        //const status = {recipeId  : req.body.recipeId, userId : req.body.userId}
-        res.json(status);
+        try {
+            const status = await dao.removeComment(req.body._id);
+            //console.log(req.body);
+            //const status = {recipeId  : req.body.recipeId, userId : req.body.userId}
+            res.json(status);
+        }
+        catch {
+            res.status(400).json({ message: error.message });
+        }
     };
     const getCommentsCountOnRecipe = async (req, res) => {
-        const commentCount = await dao.getCommentsCountOnRecipe(req.params.recipeId);
-        res.json({ "count" : commentCount});
+        try {
+            const commentCount = await dao.getCommentsCountOnRecipe(req.params.recipeId);
+            res.json({ "count": commentCount });
+        }
+        catch (error) {
+            res.status(400).json({ message: error.message });
+        }
     };
     const getUserCommentsOnRecipe = async (req, res) => {
-        const comments = await dao.getCommentsOnRecipe(req.params.recipeId);
-        res.json(comments);
+        try {
+            const comments = await dao.getCommentsOnRecipe(req.params.recipeId);
+            res.json(comments);
+        }
+        catch (error) {
+            res.status(400).json({ message: err.message });
+        }
     };
 
     const getAllCommentsByUser = async (req, res) => {
-        const comments = await dao.getAllCommentsByUser(req.params.userId);
-        const mutableComments = convertToMutableObjects(comments);
-        const populatedComments = await addRecipeDetails(mutableComments);
-        res.json(populatedComments);
+        try {
+            const comments = await dao.getAllCommentsByUser(req.params.userId);
+            const mutableComments = convertToMutableObjects(comments);
+            const populatedComments = await addRecipeDetails(mutableComments);
+            res.json(populatedComments);
+        }
+        catch (error) {
+            res.status(400).json({ message: error.message });
+        }
     };
 
     app.post("/api/comment/recipe", addComment);

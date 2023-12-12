@@ -56,7 +56,7 @@ async function addLikesAndCommentsCount(recipes) {
         recipes[i] = await addLikesAndCommentsCountToSingleRecipe(recipe)
     }
 
-    console.log(recipes);
+    // console.log(recipes);
     // Now the recipes array contains added properties like likeCount and commentsCount for each recipe
     return recipes;
 }
@@ -128,13 +128,18 @@ function RecipeRoutes(app) {
             res.json(updatedRecipe);
         }
         catch (error) {
-            const externRecipe = await mealDB.getMealById(req.params._id);
-            if (externRecipe) {
-                const updatedRecipe = await addLikesAndCommentsCountToSingleRecipe(externRecipe[0]);
-                res.json(updatedRecipe);
+            try {
+                const externRecipe = await mealDB.getMealById(req.params._id);
+                if (externRecipe) {
+                    const updatedRecipe = await addLikesAndCommentsCountToSingleRecipe(externRecipe[0]);
+                    res.json(updatedRecipe);
+                }
+                else {
+                    res.status(401).json({ message: "Recipe not found." });
+                }
             }
-            else {
-                res.status(401).json({ message: "Recipe not found." });
+            catch (error) {
+                res.status(400).json({ message: error.message });
             }
         }
     };
@@ -178,7 +183,7 @@ function RecipeRoutes(app) {
         catch (err) {
             res.status(400).json({ message: err.message });
         }
-    };
+    }; 
 
     // const findRecipesByCategory = async (req, res) => {
     //     try {
