@@ -72,7 +72,7 @@ function LikeRoutes(app) {
     };
     const getLikedUsers = async (req, res) => {
         try {
-            const users = await dao.getLikedUsers(req.body.recipeId);
+            const users = await dao.getLikedUsers(req.params.recipeId);
             res.json(users);
         }
         catch (error) {
