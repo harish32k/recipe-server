@@ -209,6 +209,20 @@ function RecipeRoutes(app) {
         }
     };
 
+    const findUserRecipes = async (req, res) => {
+        try {
+            const recipes = await local.findRecipesByUserId(req.params.userId);
+            const mutableRecipes = convertToMutableObjects(recipes);
+            //const externRecipes = await mealDB.filterByCategorySimple(req.params.category);
+            //const mergedRecipes = [...mutableRecipes, ...externRecipes];
+            const result = await addLikesAndCommentsCount(mutableRecipes);
+            res.json(result);
+        }
+        catch (err) {
+            res.status(400).json({ message: err.message });
+        }
+    };
+
 
     app.post("/api/recipes", createRecipe);
     app.get("/api/recipes", findAllRecipes);
@@ -218,6 +232,7 @@ function RecipeRoutes(app) {
     app.get("/api/recipes/id/:_id", findRecipeById);
     app.put("/api/recipes/id/:_id", updateRecipe);
     app.delete("/api/recipes/id/:_id", deleteRecipe);
+    app.get("/api/recipes/user/:userId", findUserRecipes);
 }
 
 export default RecipeRoutes;

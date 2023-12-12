@@ -57,7 +57,7 @@ function LikeRoutes(app) {
         res.json(status);
     };
     const getLikeCount = async (req, res) => {
-        const likeCount = await dao.getLikeCount(req.body.recipeId);
+        const likeCount = await dao.getLikeCount(req.params.recipeId);
         res.json({ "count" : likeCount});
     };
     const getLikedUsers = async (req, res) => {
@@ -65,11 +65,11 @@ function LikeRoutes(app) {
         res.json(users);
     };
     const likedStatus = async (req, res) => {
-        const isLiked = await dao.isPostLikedByCurrentUser(req.body.recipeId, req.body.userId);
+        const isLiked = await dao.isPostLikedByCurrentUser(req.params.recipeId, req.params.userId);
         res.json({ "liked" : isLiked === 1 ? true : false});
     };
     const getPostsLikedByUser = async (req, res) => {
-        const likes = await dao.getPostsLikedByUser(req.body.userId);
+        const likes = await dao.getPostsLikedByUser(req.params.userId);
         const mutableLikes = convertToMutableObjects(likes);
         const populatedLikes = await addRecipeDetails(mutableLikes);
         res.json(populatedLikes);
@@ -77,10 +77,10 @@ function LikeRoutes(app) {
 
     app.post("/api/like", addLike);
     app.delete("/api/like/delete", removeLike);
-    app.get("/api/like/users", getLikedUsers);
-    app.get("/api/like/count", getLikeCount);
-    app.get("/api/like/liked-status", likedStatus);
-    app.get("/api/like/user-liked", getPostsLikedByUser);
+    app.get("/api/like/users/:userId", getLikedUsers);
+    app.get("/api/like/count/:recipeId", getLikeCount);
+    app.get("/api/like/liked-status/recipe/:recipeId/user/:userId", likedStatus);
+    app.get("/api/like/user-liked/:userId", getPostsLikedByUser);
 }
 
 export default LikeRoutes;

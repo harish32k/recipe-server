@@ -56,26 +56,26 @@ function CommentRoutes(app) {
         res.json(status);
     };
     const getCommentsCountOnRecipe = async (req, res) => {
-        const commentCount = await dao.getCommentsCountOnRecipe(req.body.recipeId);
+        const commentCount = await dao.getCommentsCountOnRecipe(req.params.recipeId);
         res.json({ "count" : commentCount});
     };
     const getUserCommentsOnRecipe = async (req, res) => {
-        const comments = await dao.getCommentsOnRecipe(req.body.recipeId);
+        const comments = await dao.getCommentsOnRecipe(req.params.recipeId);
         res.json(comments);
     };
 
     const getAllCommentsByUser = async (req, res) => {
-        const comments = await dao.getAllCommentsByUser(req.body.userId);
+        const comments = await dao.getAllCommentsByUser(req.params.userId);
         const mutableComments = convertToMutableObjects(comments);
         const populatedComments = await addRecipeDetails(mutableComments);
         res.json(populatedComments);
     };
 
-    app.post("/api/comment", addComment);
-    app.get("/api/comment", getUserCommentsOnRecipe);
-    app.delete("/api/comment", removeComment);
-    app.get("/api/comment/count", getCommentsCountOnRecipe);
-    app.get("/api/comment/user", getAllCommentsByUser);
+    app.post("/api/comment/recipe", addComment);
+    app.get("/api/comment/recipe/:recipeId", getUserCommentsOnRecipe);
+    app.delete("/api/comment/recipe", removeComment);
+    app.get("/api/comment/count/recipe/:recipeId", getCommentsCountOnRecipe);
+    app.get("/api/comment/user/:userId", getAllCommentsByUser);
 }
 
 export default CommentRoutes;
