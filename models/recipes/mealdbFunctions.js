@@ -148,8 +148,9 @@ export const getRandomMeal = async () => {
 export const getMealCategories = async () => {
     try {
         const response = await axios.get(`${MEAL_API}/categories.php`);
-        if (!response.data.meals) { return [] };
-        return transformMealData(response.data.meals);
+        // console.log(response.data)
+        if (!response.data.categories) { return [] };
+        return response.data.categories;
     } catch (err) {
         return { message: err.message };
     }
@@ -172,6 +173,26 @@ export const filterByCategorySimple = async (category) => {
         if (!response.data.meals) { return [] };
         //const results = await fetchRecipeFromIdArray(response.data.meals);
         return transformMealDataSimple(response.data.meals);
+    } catch (err) {
+        return { message: err.message };
+    }
+};
+
+export const filterByCategoryRandom = async (category, n) => {
+    try {
+        const response = await axios.get(`${MEAL_API}/filter.php?c=${category}`);
+        if (!response.data.meals) { return [] };
+
+        // Shuffle the received items before transforming
+        const shuffledItems = response.data.meals.sort(() => Math.random() - 0.5);
+
+        // Get the first 'n' items from the shuffled array, or all items if there are less than 'n'
+        const randomItems = shuffledItems.slice(0, Math.min(n, shuffledItems.length));
+
+        // Transform the meal data if needed after shuffling
+        const transformedData = transformMealDataSimple(randomItems);
+
+        return transformedData;
     } catch (err) {
         return { message: err.message };
     }

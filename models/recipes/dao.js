@@ -10,7 +10,7 @@ export const findRecipesByArea = (area) => model.find({ strArea: area }).populat
 export const findRecipesByCategorySimple =
   (category) => model.find({ strCategory: category })
     .select("_id strMeal strMealThumb postedTime approved userId source")
-    .populate("userId", "firstName lastName username");;
+    .populate("userId", "firstName lastName username");
 export const findRecipesByAreaSimple =
   (area) => model.find({ strArea: area })
     .select("_id strMeal strMealThumb postedTime approved userId source")
@@ -21,5 +21,31 @@ export const updateRecipe = (_id, recipe) =>
 export const approveRecipe = (_id) =>
   model.updateOne({ _id: _id }, { $set: { approved: true } });
 export const deleteRecipe = (_id) => model.deleteOne({ _id: _id });
+
+export const findRecipesByCategoryRandom = async (category, n) => {
+  try {
+    const filteredItemsQuery = model.find({ strCategory: category })
+      .select("_id strMeal strMealThumb postedTime approved userId source strCategory")
+      .populate("userId", "firstName lastName username"); // Apply your filter
+    // Execute the query to get the array of filtered items
+    const filteredItems = await filteredItemsQuery.exec();
+
+
+    // Shuffle the filtered items randomly
+    const shuffledItems = filteredItems.sort(() => Math.random() - 0.5);
+
+    // Check if the number of filtered items is less than 'n'
+    if (shuffledItems.length <= n) {
+      return shuffledItems; // Return all filtered items if they're fewer than 'n'
+    } else {
+      // Get the first 'n' items from the shuffled array
+      const randomItems = shuffledItems.slice(0, n);
+      return randomItems;
+    }
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 // export const findRecipesByIngredients = (ingredientList) =>
 //   model.find({ ingredients: { $in: ingredientList } });

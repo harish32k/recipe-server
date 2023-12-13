@@ -2,6 +2,9 @@ import * as local from "../models/recipes/dao.js";
 import * as mealDB from "../models/recipes/mealdbFunctions.js"
 import * as likesDao from "../models/likes/dao.js"
 import * as commentsDao from "../models/comments/dao.js"
+import * as favCatDao from "../models/favCategories/dao.js"
+
+
 import mongoose from "mongoose";
 
 
@@ -59,6 +62,28 @@ async function addLikesAndCommentsCount(recipes) {
     // console.log(recipes);
     // Now the recipes array contains added properties like likeCount and commentsCount for each recipe
     return recipes;
+}
+
+function addCategoryInfo(meals, category) {
+    const transformedMeals = meals.map((meal) => {
+        const transformedMeal = {
+            ...meal,
+            strCategory: category
+        };
+        return transformedMeal;
+    });
+    return transformedMeals;
+}
+
+function addAreaInfo(meals, area) {
+    const transformedMeals = meals.map((meal) => {
+        const transformedMeal = {
+            ...meal,
+            strArea: area
+        };
+        return transformedMeal;
+    });
+    return transformedMeals;
 }
 
 
@@ -192,7 +217,7 @@ function RecipeRoutes(app) {
         catch (err) {
             res.status(400).json({ message: err.message });
         }
-    }; 
+    };
 
     // const findRecipesByCategory = async (req, res) => {
     //     try {
@@ -237,6 +262,107 @@ function RecipeRoutes(app) {
         }
     };
 
+    async function findRandomRecipeHelper(category) {
+        const recipes = await local.findRecipesByCategoryRandom(category, 3);
+        const mutableRecipes = convertToMutableObjects(recipes);
+        const externRecipes = await mealDB.filterByCategoryRandom(category, 5);
+        const mergedRecipes = [...mutableRecipes, ...externRecipes];
+        return mergedRecipes
+    }
+
+    const findRecipesByCategoryRandom = async (req, res) => {
+        try {
+            const overallRecipes = []
+            overallRecipes.push(... await findRandomRecipeHelper(req.params.category));
+            const result = await addLikesAndCommentsCount(overallRecipes);
+            res.json(result);
+        }
+        catch (err) {
+            console.log(err)
+            res.status(400).json({ message: err.message });
+        }
+    };
+
+    const findCompletelyRandomRecipesByRandomCategory = async (req, res) => {
+        try {
+            const overallRecipes = [];
+
+            // Fetch all categories
+            const categories = await mealDB.getMealCategories();
+
+            // Shuffle the categories array to randomize the order
+            const shuffledCategories = categories.sort(() => Math.random() - 0.5);
+
+            // Select the first 4 categories from the shuffled array
+            const selectedCategories = shuffledCategories.slice(0, 4);
+
+            // console.log(selectedCategories);
+
+            // Loop through each category
+            for (const categoryObj of selectedCategories) {
+                //console.log(categoryObj)
+                const category = categoryObj.strCategory;
+                // Retrieve recipes for the current category from local and external sources
+                // Merge local and external recipes
+                console.log(category)
+                const mergedRecipes = await findRandomRecipeHelper(category);
+
+                // Add the merged recipes to overallRecipes
+                overallRecipes.push(...mergedRecipes);
+            }
+
+            // Calculate likes and comments count for all recipes in overallRecipes
+            const result = await addLikesAndCommentsCount(overallRecipes);
+
+            // Respond with the result
+            res.json(result);
+        } catch (err) {
+            console.log(err);
+            res.status(400).json({ message: err.message });
+        }
+    };
+
+    
+    const findRecipesByFavouriteCategoryRandom = async (req, res) => {
+        try {
+            const overallRecipes = [];
+
+            // Fetch all categories
+            const fetchedCategories = await favCatDao.getCategoriesFavouritedByUser(req.params.userId);
+
+            const categories = fetchedCategories;
+            
+            // Shuffle the categories array to randomize the order
+            const shuffledCategories = categories.sort(() => Math.random() - 0.5);
+
+            // Select the first 4 categories from the shuffled array
+            const selectedCategories = shuffledCategories.slice(0, 4);
+
+            // console.log(selectedCategories);
+
+            // Loop through each category
+            for (const categoryObj of selectedCategories) {
+                //console.log(categoryObj)
+                const category = categoryObj.strCategory;
+                // Retrieve recipes for the current category from local and external sources
+                // Merge local and external recipes
+                console.log(category)
+                const mergedRecipes = await findRandomRecipeHelper(category);
+
+                // Add the merged recipes to overallRecipes
+                overallRecipes.push(...mergedRecipes);
+            }
+
+            // Calculate likes and comments count for all recipes in overallRecipes
+            const result = await addLikesAndCommentsCount(overallRecipes);
+
+            // Respond with the result
+            res.json(result);
+        } catch (err) {
+            console.log(err);
+            res.status(400).json({ message: err.message });
+        }
+    };
 
     app.post("/api/recipes", createRecipe);
     app.get("/api/recipes", findAllRecipes);
@@ -248,6 +374,9 @@ function RecipeRoutes(app) {
     app.delete("/api/recipes/id/:_id", deleteRecipe);
     app.get("/api/recipes/user/:userId", findUserRecipes);
     app.put("/api/recipes/approve/:_id", approveRecipe);
+    app.get("/api/recipes/random/category/simple/:category", findRecipesByCategoryRandom);
+    app.get("/api/recipes/random/category/complete-random", findCompletelyRandomRecipesByRandomCategory);
+    app.get("/api/recipes/random/category/favourite/:userId", findRecipesByFavouriteCategoryRandom);
 }
 
 export default RecipeRoutes;
