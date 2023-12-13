@@ -9,6 +9,7 @@ import MealRoutes from "./routes/mealDB.js";
 import RecipeRoutes from "./routes/recipes.js";
 import LikeRoutes from "./routes/likes.js";
 import CommentRoutes from "./routes/comments.js";
+import bodyParser from "body-parser";
 
 dotenv.config();
 
@@ -21,9 +22,13 @@ mongoose.connect(
 );
 
 const app = express();
+app.use(bodyParser.json({limit: '50mb', extended: true}));
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
+app.use(bodyParser.text({ limit: '200mb' }));
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+
 
 UserRoutes(app);
 AuthRoutes(app);
