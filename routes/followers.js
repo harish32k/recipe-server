@@ -3,7 +3,7 @@ import * as dao from "../models/followers/dao.js";
 function FollowerRoutes(app) {
     const addFollow = async (req, res) => {
         try {
-            const follow = await dao.addFollow(req.body.userId, req.body.followId);
+            const follow = await dao.addFollow(req.params.userId, req.params.followId);
             res.json(follow);
         }
         catch (error) {
@@ -22,53 +22,49 @@ function FollowerRoutes(app) {
             res.status(400).json({ message: error.message });
         }
     };
-    const getLikeCount = async (req, res) => {
+    const getFollowingCount = async (req, res) => {
         try {
-            const likeCount = await dao.getLikeCount(req.params.recipeId);
-            res.json({ "count": likeCount });
+            const followingCount = await dao.countUserFollowings(req.params.userId);
+            res.json({ "count": followingCount });
         }
         catch (error) {
             res.status(400).json({ message: error.message });
         }
     };
-    const getLikedUsers = async (req, res) => {
+    const getFollowerCount = async (req, res) => {
         try {
-            const users = await dao.getLikedUsers(req.params.recipeId);
-            res.json(users);
+            const followerCount = await dao.countUserFollowers(req.params.userId);
+            res.json({ "count": followerCount });
         }
         catch (error) {
             res.status(400).json({ message: error.message });
         }
     };
-    const likedStatus = async (req, res) => {
-        // res.json({ "liked": false });
-        // console.log(req.params)
+    const followingUsers = async (req, res) => {
         try {
-            const isLiked = await dao.isPostLikedByCurrentUser(req.params.recipeId, req.params.userId);
-            res.json({ "liked": isLiked === 1 ? true : false });
+            const followings = await dao.getFollowingPeople(req.params.userId);
+            res.json(followings);
         }
         catch (error) {
             res.status(400).json({ message: error.message });
         }
     };
-    const getPostsLikedByUser = async (req, res) => {
+    const followerUsers = async (req, res) => {
         try {
-            const likes = await dao.getPostsLikedByUser(req.params.userId);
-            const mutableLikes = convertToMutableObjects(likes);
-            const populatedLikes = await addRecipeDetails(mutableLikes);
-            res.json(populatedLikes);
+            const followers = await dao.getFollowerPeople(req.params.userId);
+            res.json(followers);
         }
         catch (error) {
             res.status(400).json({ message: error.message });
         }
     };
 
-    app.post("/api/follow", addFollow);
-    app.delete("/api/follow/follower/user/:userId/following/:followId", removeFollow);
-    app.get("/api/follow/count/following/:userId", followingCount);
-    app.get("/api/follow/count/followers/:userId", followerCount);
+    app.post("/api/follow/user/:userId/following/:followId", addFollow);
+    app.delete("/api/follow/user/:userId/following/:followId", removeFollow);
+    app.get("/api/follow/count/following/:userId", getFollowingCount);
+    app.get("/api/follow/count/followers/:userId", getFollowerCount);
     app.get("/api/follow/list/following/:userId", followingUsers);
     app.get("/api/follow/list/followers/:userId", followerUsers);
 }
 
-export default LikeRoutes;
+export default FollowerRoutes;

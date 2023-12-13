@@ -15,6 +15,6 @@ const followersSchema = new mongoose.Schema({
 });
 
 // Ensuring a unique combination of userId and recipeId
-followersSchema.index({ userId: 1, followsId: 1 }, { unique: true });
+followersSchema.index({ userId: 1, followId: 1 }, { unique: true });
 
 export default followersSchema;
