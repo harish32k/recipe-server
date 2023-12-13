@@ -3,15 +3,15 @@ import mongoose from "mongoose";
 const followersSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId, // Assuming userId is ObjectId
-    ref: 'users', // Reference to the User model
-    required: true
+    ref: "users", // Reference to the User model
+    required: true,
   },
   followId: {
     type: mongoose.Schema.Types.ObjectId, // Assuming userId is ObjectId
-    ref: 'users', // Reference to the User model
-    required: true
+    ref: "users", // Reference to the User model
+    required: true,
   },
-  followedTime: Date
+  followedTime: Date,
 });
 
 // Ensuring a unique combination of userId and recipeId

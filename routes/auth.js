@@ -38,7 +38,7 @@ function AuthRoutes(app) {
       }
     }
 
-    console.log("Refresh token: ", refreshToken);
+    // console.log("Refresh token: ", refreshToken);
 
     try {
       await tokenDao.createToken(accessToken, refreshToken, userObj._id);
@@ -46,15 +46,19 @@ function AuthRoutes(app) {
       console.log(err);
     }
     // res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true });
-    res.json({
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-      // message: "User logged in",
-    });
+    req.session["refreshToken"] = refreshToken;
+    req.session["accessToken"] = accessToken;
+    // res.json({
+    //   accessToken: accessToken,
+    //   refreshToken: refreshToken,
+    //   // message: "User logged in",
+    // });
+    res.json(userObj);
   };
 
   const token = async (req, res) => {
-    const refreshToken = req.body.token;
+    // const refreshToken = req.body.token;
+    const refreshToken = req.session["refreshToken"];
     if (refreshToken == null) return res.sendStatus(401);
 
     if (!(await tokenDao.findToken(refreshToken))) return res.sendStatus(403);
@@ -69,7 +73,9 @@ function AuthRoutes(app) {
       };
       const accessToken = generateAccessToken(userObj);
       await tokenDao.updateAccessToken(accessToken, userObj._id);
-      res.json({ accessToken: accessToken });
+      req.session["accessToken"] = accessToken;
+      // res.json({ accessToken: accessToken });
+      res.sendStatus(200);
     });
   };
 
@@ -79,6 +85,7 @@ function AuthRoutes(app) {
 
   const signout = async (req, res) => {
     await tokenDao.deleteById(req.user._id);
+    req.session.destroy();
     return res.sendStatus(204);
     // const refreshToken = req.body.token;
     // jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, async (err, user) => {
@@ -95,13 +102,18 @@ function AuthRoutes(app) {
     // });
   };
 
+  const verifyValidUser = async (req, res) => {
+    console.log(req.user);
+    res.json(req.user);
+  };
+
   const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
     if (token == null) return res.sendStatus(401);
 
     try {
-      const user = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+      const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
       req.user = user;
 
       const accessToken = await tokenDao.findByAccessToken(token);
@@ -115,10 +127,30 @@ function AuthRoutes(app) {
     }
   };
 
-  app.delete("/api/auth/signout", authenticateToken, signout);
+  const authenticateTokenFromSession = async (req, res, next) => {
+    const token = req.session["accessToken"];
+    if (token == null) return res.sendStatus(401);
+
+    try {
+      const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+      req.user = user;
+
+      const accessToken = await tokenDao.findByAccessToken(token);
+      if (!accessToken) {
+        return res.sendStatus(401);
+      } else {
+        next();
+      }
+    } catch (error) {
+      return res.sendStatus(403);
+    }
+  };
+
+  app.delete("/api/auth/signout", authenticateTokenFromSession, signout);
   app.post("/api/auth/signin", signin);
   app.post("/api/auth/token", token);
   app.get("/api/auth/user", authenticateToken, fetchUserdetails);
+  app.get("/api/auth/verify", authenticateTokenFromSession, verifyValidUser);
 }
 
 function generateAccessToken(user) {

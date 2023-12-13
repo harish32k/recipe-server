@@ -1,8 +1,9 @@
 import model from "./model.js";
 
-
-export const addFavouriteCategory = (userId, strCategory) => model.create({ userId, strCategory, favouritedTime: Date.now() });
-export const removeFavouriteCategory = (userId, strCategory) => model.deleteOne({ userId : userId,  strCategory : strCategory });
+export const addFavouriteCategory = (userId, strCategory) =>
+  model.create({ userId, strCategory, favouritedTime: Date.now() });
+export const removeFavouriteCategory = (userId, strCategory) =>
+  model.deleteOne({ userId: userId, strCategory: strCategory });
 export const getCategoriesFavouritedByUser = (userId) => model.find({ userId });
 
 // export const findRecipeById = (_id) => model.findOne({ _id: _id });

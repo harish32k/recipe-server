@@ -6,154 +6,164 @@ dotenv.config();
 const MEAL_API = process.env.MEAL_API;
 
 const transformMealData = (meals) => {
-    const transformedMeals = meals.map((meal) => {
-        const transformedMeal = {
-            _id: meal.idMeal,
-            strMeal: meal.strMeal,
-            //strDrinkAlternate: meal.strDrinkAlternate,
-            strCategory: meal.strCategory,
-            strArea: meal.strArea,
-            strInstructions: meal.strInstructions,
-            strMealThumb: meal.strMealThumb,
-            //strTags: meal.strTags,
-            strYoutube: meal.strYoutube,
-            //strSource: meal.strSource,
-            //strImageSource: meal.strImageSource,
-            //strCreativeCommonsConfirmed: meal.strCreativeCommonsConfirmed,
-            //dateModified: meal.dateModified,
-            postedTime: Date(2023, 10, 5, 5, 5, 5, 5),
-            ingredients: [],
-            measures: [],
-            approved: true,
-            userId: {
-                "_id": "mealDB",
-                "username": "mealDB",
-                "firstName": "MealDB",
-                "lastName": "API"
-            },
-            source: "external",
-        };
+  const transformedMeals = meals.map((meal) => {
+    const transformedMeal = {
+      _id: meal.idMeal,
+      strMeal: meal.strMeal,
+      //strDrinkAlternate: meal.strDrinkAlternate,
+      strCategory: meal.strCategory,
+      strArea: meal.strArea,
+      strInstructions: meal.strInstructions,
+      strMealThumb: meal.strMealThumb,
+      //strTags: meal.strTags,
+      strYoutube: meal.strYoutube,
+      //strSource: meal.strSource,
+      //strImageSource: meal.strImageSource,
+      //strCreativeCommonsConfirmed: meal.strCreativeCommonsConfirmed,
+      //dateModified: meal.dateModified,
+      postedTime: Date(2023, 10, 5, 5, 5, 5, 5),
+      ingredients: [],
+      measures: [],
+      approved: true,
+      userId: {
+        _id: "mealDB",
+        username: "mealDB",
+        firstName: "MealDB",
+        lastName: "API",
+      },
+      source: "external",
+    };
 
-        // Combine ingredients and measures into respective arrays
-        //console.log(meal);
-        for (let i = 1; i <= 20; i++) {
-            const ingredient = meal[`strIngredient${i}`];
-            const measure = meal[`strMeasure${i}`];
+    // Combine ingredients and measures into respective arrays
+    //console.log(meal);
+    for (let i = 1; i <= 20; i++) {
+      const ingredient = meal[`strIngredient${i}`];
+      const measure = meal[`strMeasure${i}`];
 
-            if ((ingredient !== "" && ingredient !== " " && ingredient !== null)) {
-                transformedMeal.ingredients.push(ingredient);
-                transformedMeal.measures.push(measure);
-            }
-        }
+      if (ingredient !== "" && ingredient !== " " && ingredient !== null) {
+        transformedMeal.ingredients.push(ingredient);
+        transformedMeal.measures.push(measure);
+      }
+    }
 
-        return transformedMeal;
-    });
+    return transformedMeal;
+  });
 
-    return transformedMeals;
+  return transformedMeals;
 };
 
 const transformMealDataSimple = (meals) => {
-    const transformedMeals = meals.map((meal) => {
-        const transformedMeal = {
-            _id: meal.idMeal,
-            strMeal: meal.strMeal,
-            //strDrinkAlternate: meal.strDrinkAlternate,
-            // strCategory: meal.strCategory,
-            // strArea: meal.strArea,
-            // strInstructions: meal.strInstructions,
-            strMealThumb: meal.strMealThumb,
-            //strTags: meal.strTags,
-            // strYoutube: meal.strYoutube,
-            //strSource: meal.strSource,
-            //strImageSource: meal.strImageSource,
-            //strCreativeCommonsConfirmed: meal.strCreativeCommonsConfirmed,
-            //dateModified: meal.dateModified,
-            postedTime: Date(2023, 10, 5, 5, 5, 5, 5),
-            //ingredients: [],
-            //measures: [],
-            approved: true,
-            userId: {
-                "_id": "mealDB",
-                "username": "mealDB",
-                "firstName": "MealDB",
-                "lastName": "API"
-            },
-            source: "external",
-        };
+  const transformedMeals = meals.map((meal) => {
+    const transformedMeal = {
+      _id: meal.idMeal,
+      strMeal: meal.strMeal,
+      //strDrinkAlternate: meal.strDrinkAlternate,
+      // strCategory: meal.strCategory,
+      // strArea: meal.strArea,
+      // strInstructions: meal.strInstructions,
+      strMealThumb: meal.strMealThumb,
+      //strTags: meal.strTags,
+      // strYoutube: meal.strYoutube,
+      //strSource: meal.strSource,
+      //strImageSource: meal.strImageSource,
+      //strCreativeCommonsConfirmed: meal.strCreativeCommonsConfirmed,
+      //dateModified: meal.dateModified,
+      postedTime: Date(2023, 10, 5, 5, 5, 5, 5),
+      //ingredients: [],
+      //measures: [],
+      approved: true,
+      userId: {
+        _id: "mealDB",
+        username: "mealDB",
+        firstName: "MealDB",
+        lastName: "API",
+      },
+      source: "external",
+    };
 
-        return transformedMeal;
-    });
+    return transformedMeal;
+  });
 
-    return transformedMeals;
+  return transformedMeals;
 };
 
 async function fetchMealDetails(mealId) {
-    const response = await axios.get(`${MEAL_API}/lookup.php?i=${mealId}`);
-    return response.data.meals[0];
+  const response = await axios.get(`${MEAL_API}/lookup.php?i=${mealId}`);
+  return response.data.meals[0];
 }
 
 async function fetchRecipeFromIdArray(meals) {
-    const newArray = [];
-    for (const meal of meals) {
-        const mealId = meal.idMeal;
-        const mealDetails = await fetchMealDetails(mealId);
-        //console.log(mealDetails);
-        newArray.push(mealDetails);
-    }
-    return newArray;
+  const newArray = [];
+  for (const meal of meals) {
+    const mealId = meal.idMeal;
+    const mealDetails = await fetchMealDetails(mealId);
+    //console.log(mealDetails);
+    newArray.push(mealDetails);
+  }
+  return newArray;
 }
 
 export const getMealById = async (id) => {
-    try {
-        //console.log(`${MEAL_API}/lookup.php?i=${id}`);
-        const response = await axios.get(`${MEAL_API}/lookup.php?i=${id}`);
-        if (!response.data.meals) { return [] };
-        return transformMealData(response.data.meals);
-    } catch (err) {
-        return { message: "error" };
+  try {
+    //console.log(`${MEAL_API}/lookup.php?i=${id}`);
+    const response = await axios.get(`${MEAL_API}/lookup.php?i=${id}`);
+    if (!response.data.meals) {
+      return [];
     }
+    return transformMealData(response.data.meals);
+  } catch (err) {
+    return { message: "error" };
+  }
 };
 
 export const getMealByName = async (name) => {
-    try {
-        const response = await axios.get(`${MEAL_API}/search.php?s=${name}`);
-        if (!response.data.meals) { return [] };
-        return transformMealData(response.data.meals);
-    } catch (err) {
-        return { message: "error" };
+  try {
+    const response = await axios.get(`${MEAL_API}/search.php?s=${name}`);
+    if (!response.data.meals) {
+      return [];
     }
+    return transformMealData(response.data.meals);
+  } catch (err) {
+    return { message: "error" };
+  }
 };
 
 export const getMealByFirstLetter = async (letter) => {
-    try {
-        const response = await axios.get(`${MEAL_API}/search.php?f=${letter}`);
-        if (!response.data.meals) { return [] };
-        return transformMealData(response.data.meals);
-    } catch (err) {
-        return { message: err.message };
+  try {
+    const response = await axios.get(`${MEAL_API}/search.php?f=${letter}`);
+    if (!response.data.meals) {
+      return [];
     }
+    return transformMealData(response.data.meals);
+  } catch (err) {
+    return { message: err.message };
+  }
 };
 
 export const getRandomMeal = async () => {
-    console.log("getRandomMeal");
-    try {
-        const response = await axios.get(`${MEAL_API}/random.php`);
-        if (!response.data.meals) { return [] };
-        return transformMealData(response.data.meals);
-    } catch (err) {
-        return { message: err.message };
+  console.log("getRandomMeal");
+  try {
+    const response = await axios.get(`${MEAL_API}/random.php`);
+    if (!response.data.meals) {
+      return [];
     }
+    return transformMealData(response.data.meals);
+  } catch (err) {
+    return { message: err.message };
+  }
 };
 
 export const getMealCategories = async () => {
-    try {
-        const response = await axios.get(`${MEAL_API}/categories.php`);
-        // console.log(response.data)
-        if (!response.data.categories) { return [] };
-        return response.data.categories;
-    } catch (err) {
-        return { message: err.message };
+  try {
+    const response = await axios.get(`${MEAL_API}/categories.php`);
+    // console.log(response.data)
+    if (!response.data.categories) {
+      return [];
     }
+    return response.data.categories;
+  } catch (err) {
+    return { message: err.message };
+  }
 };
 
 // export const filterByCategory = async (category) => {
@@ -168,34 +178,41 @@ export const getMealCategories = async () => {
 // };
 
 export const filterByCategorySimple = async (category) => {
-    try {
-        const response = await axios.get(`${MEAL_API}/filter.php?c=${category}`);
-        if (!response.data.meals) { return [] };
-        //const results = await fetchRecipeFromIdArray(response.data.meals);
-        return transformMealDataSimple(response.data.meals);
-    } catch (err) {
-        return { message: err.message };
+  try {
+    const response = await axios.get(`${MEAL_API}/filter.php?c=${category}`);
+    if (!response.data.meals) {
+      return [];
     }
+    //const results = await fetchRecipeFromIdArray(response.data.meals);
+    return transformMealDataSimple(response.data.meals);
+  } catch (err) {
+    return { message: err.message };
+  }
 };
 
 export const filterByCategoryRandom = async (category, n) => {
-    try {
-        const response = await axios.get(`${MEAL_API}/filter.php?c=${category}`);
-        if (!response.data.meals) { return [] };
-
-        // Shuffle the received items before transforming
-        const shuffledItems = response.data.meals.sort(() => Math.random() - 0.5);
-
-        // Get the first 'n' items from the shuffled array, or all items if there are less than 'n'
-        const randomItems = shuffledItems.slice(0, Math.min(n, shuffledItems.length));
-
-        // Transform the meal data if needed after shuffling
-        const transformedData = transformMealDataSimple(randomItems);
-
-        return transformedData;
-    } catch (err) {
-        return { message: err.message };
+  try {
+    const response = await axios.get(`${MEAL_API}/filter.php?c=${category}`);
+    if (!response.data.meals) {
+      return [];
     }
+
+    // Shuffle the received items before transforming
+    const shuffledItems = response.data.meals.sort(() => Math.random() - 0.5);
+
+    // Get the first 'n' items from the shuffled array, or all items if there are less than 'n'
+    const randomItems = shuffledItems.slice(
+      0,
+      Math.min(n, shuffledItems.length)
+    );
+
+    // Transform the meal data if needed after shuffling
+    const transformedData = transformMealDataSimple(randomItems);
+
+    return transformedData;
+  } catch (err) {
+    return { message: err.message };
+  }
 };
 
 // export const filterByArea = async (area) => {
@@ -210,30 +227,31 @@ export const filterByCategoryRandom = async (category, n) => {
 //     }
 // };
 
-
 export const filterByAreaSimple = async (area) => {
-    try {
-        const response = await axios.get(`${MEAL_API}/filter.php?a=${area}`);
-        if (!response.data.meals) { return [] };
-        const results = await fetchRecipeFromIdArray(response.data.meals);
-        //console.log(transformMealData(results))
-        return transformMealDataSimple(results);
-    } catch (err) {
-        return { message: err.message };
+  try {
+    const response = await axios.get(`${MEAL_API}/filter.php?a=${area}`);
+    if (!response.data.meals) {
+      return [];
     }
+    const results = await fetchRecipeFromIdArray(response.data.meals);
+    //console.log(transformMealData(results))
+    return transformMealDataSimple(results);
+  } catch (err) {
+    return { message: err.message };
+  }
 };
 
 export const getRandomTenMeals = async () => {
-    try {
-        let meals = { meals: [] };
-        for (let i = 0; i < 10; i++) {
-            const response = await axios.get(`${MEAL_API}/random.php`);
-            meals.meals[i] = response.data.meals.meals[0];
-        }
-        return transformMealData(meals);
-    } catch (err) {
-        return { message: err.message };
+  try {
+    let meals = { meals: [] };
+    for (let i = 0; i < 10; i++) {
+      const response = await axios.get(`${MEAL_API}/random.php`);
+      meals.meals[i] = response.data.meals.meals[0];
     }
+    return transformMealData(meals);
+  } catch (err) {
+    return { message: err.message };
+  }
 };
 
 // our APi

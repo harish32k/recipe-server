@@ -78,10 +78,20 @@ function MealRoutes(app) {
     }
   };
 
+  const getAreas = async (req, res) => {
+    try {
+      const response = await axios.get(`${MEAL_API}/list.php?a=list`);
+      res.json(response.data);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
+
   app.get("/api/meal/name/:name", getMealByName);
   app.get("/api/meal/letter/:letter", getMealByFirstLetter);
   app.get("/api/meal/random", getRandomMeal);
   app.get("/api/categories", getMealCategories);
+  app.get("/api/areas", getAreas);
   app.get("/api/filter/:category", filterByCategory);
   app.get("/api/meal/randomten", getRandomTenMeals);
   app.get("/api/meal/:id", getMealById);

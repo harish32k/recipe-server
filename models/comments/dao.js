@@ -1,11 +1,16 @@
 import model from "./model.js";
 
-export const addComment = (recipeId, userId, strComment) => model.create({ recipeId, userId, strComment, commentedTime: Date.now() });
+export const addComment = (recipeId, userId, strComment) =>
+  model.create({ recipeId, userId, strComment, commentedTime: Date.now() });
 export const removeComment = (_id) => model.deleteOne({ _id: _id });
-export const getCommentsCountOnRecipe = (recipeId) => model.countDocuments({ recipeId });
-export const getCommentsOnRecipe = (recipeId) => model.find({ recipeId }).populate("userId", "firstName lastName username");
-export const getAllCommentsByUser = (userId) => model.find({ userId }).populate("userId", "firstName lastName username");
-export const deleteAllCommentsOnRecipe = (recipeId) => model.deleteMany({ recipeId });
+export const getCommentsCountOnRecipe = (recipeId) =>
+  model.countDocuments({ recipeId });
+export const getCommentsOnRecipe = (recipeId) =>
+  model.find({ recipeId }).populate("userId", "firstName lastName username");
+export const getAllCommentsByUser = (userId) =>
+  model.find({ userId }).populate("userId", "firstName lastName username");
+export const deleteAllCommentsOnRecipe = (recipeId) =>
+  model.deleteMany({ recipeId });
 
 // export const findRecipeById = (_id) => model.findOne({ _id: _id });
 // export const findRecipesByName = (inputString) =>

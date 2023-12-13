@@ -1,13 +1,17 @@
 import model from "./model.js";
 
-
-export const addLike = (recipeId, userId) => model.create({ recipeId, userId, likedTime: Date.now() });
-export const removeLike = (recipeId, userId) => model.deleteOne({ recipeId : recipeId,  userId : userId });
+export const addLike = (recipeId, userId) =>
+  model.create({ recipeId, userId, likedTime: Date.now() });
+export const removeLike = (recipeId, userId) =>
+  model.deleteOne({ recipeId: recipeId, userId: userId });
 export const getLikeCount = (recipeId) => model.countDocuments({ recipeId });
-export const getLikedUsers = (recipeId) => model.find({ recipeId }).populate("userId", "firstName lastName username");
-export const isPostLikedByCurrentUser = (recipeId, userId) => model.countDocuments({ recipeId, userId });
+export const getLikedUsers = (recipeId) =>
+  model.find({ recipeId }).populate("userId", "firstName lastName username");
+export const isPostLikedByCurrentUser = (recipeId, userId) =>
+  model.countDocuments({ recipeId, userId });
 export const getPostsLikedByUser = (userId) => model.find({ userId });
-export const deleteAllLikesOnRecipe = (recipeId) => model.deleteMany({ recipeId });
+export const deleteAllLikesOnRecipe = (recipeId) =>
+  model.deleteMany({ recipeId });
 
 // export const findRecipeById = (_id) => model.findOne({ _id: _id });
 // export const findRecipesByName = (inputString) =>

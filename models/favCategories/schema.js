@@ -3,14 +3,14 @@ import mongoose from "mongoose";
 const favCategoriesSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId, // Assuming userId is ObjectId
-    ref: 'users', // Reference to the User model
-    required: true
+    ref: "users", // Reference to the User model
+    required: true,
   },
   strCategory: {
     type: mongoose.Schema.Types.String, // Using Mixed type to allow both ObjectId and string
-    required: true
+    required: true,
   },
-  favouritedTime: Date
+  favouritedTime: Date,
 });
 
 // Ensuring a unique combination of userId and recipeId
