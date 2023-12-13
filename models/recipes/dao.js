@@ -47,5 +47,8 @@ export const findRecipesByCategoryRandom = async (category, n) => {
   }
 };
 
+export const findRecipesOfMultipleUsers = (usersIds) => model.find({ userId: { $in: usersIds } }).select("_id strMeal strMealThumb postedTime approved userId source strCategory").populate("userId", "firstName lastName username");
+
+
 // export const findRecipesByIngredients = (ingredientList) =>
 //   model.find({ ingredients: { $in: ingredientList } });

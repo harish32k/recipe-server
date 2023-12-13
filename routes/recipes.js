@@ -3,6 +3,7 @@ import * as mealDB from "../models/recipes/mealdbFunctions.js"
 import * as likesDao from "../models/likes/dao.js"
 import * as commentsDao from "../models/comments/dao.js"
 import * as favCatDao from "../models/favCategories/dao.js"
+import * as followDao from "../models/followers/dao.js"
 
 
 import mongoose from "mongoose";
@@ -364,6 +365,33 @@ function RecipeRoutes(app) {
         }
     };
 
+    const findRecipesFromSubscriptions = async (req, res) => {
+        try {
+            const overallRecipes = [];
+
+            // Fetch all categories
+            const following = await followDao.getFollowingPeople(req.params.userId);
+            const followIds = following.map(item => item.followId._id);
+            //console.log(following)
+            const recipes = await local.findRecipesOfMultipleUsers(followIds);
+
+            const mutableRecipes = convertToMutableObjects(recipes);
+            //const externRecipes = await mealDB.filterByCategorySimple(req.params.category);
+            //const mergedRecipes = [...mutableRecipes, ...externRecipes];
+
+            // Calculate likes and comments count for all recipes in overallRecipes
+            const result = await addLikesAndCommentsCount(recipes);
+
+            // Respond with the result
+            res.json(result);
+        } catch (err) {
+            console.log(err);
+            res.status(400).json({ message: err.message });
+        }
+    };
+
+
+
     app.post("/api/recipes", createRecipe);
     app.get("/api/recipes", findAllRecipes);
     app.get("/api/recipes/name/:inputString", findRecipesByName);
@@ -377,6 +405,7 @@ function RecipeRoutes(app) {
     app.get("/api/recipes/random/category/simple/:category", findRecipesByCategoryRandom);
     app.get("/api/recipes/random/category/complete-random", findCompletelyRandomRecipesByRandomCategory);
     app.get("/api/recipes/random/category/favourite/:userId", findRecipesByFavouriteCategoryRandom);
+    app.get("/api/recipes/subscribed/user/:userId", findRecipesFromSubscriptions);
 }
 
 export default RecipeRoutes;
