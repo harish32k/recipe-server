@@ -11,6 +11,7 @@ import LikeRoutes from "./routes/likes.js";
 import CommentRoutes from "./routes/comments.js";
 import bodyParser from "body-parser";
 import FollowerRoutes from "./routes/followers.js";
+import FavCategories from "./routes/favCategories.js";
 
 dotenv.config();
 
@@ -37,7 +38,8 @@ MealRoutes(app);
 RecipeRoutes(app);
 LikeRoutes(app);
 CommentRoutes(app);
-FollowerRoutes(app)
+FollowerRoutes(app);
+FavCategories(app);
 
 app.get("/", (req, res) => {
   res.send("Welcome to Recipe app API!");

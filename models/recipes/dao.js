@@ -18,6 +18,8 @@ export const findRecipesByAreaSimple =
 export const findRecipesByUserId = (userId) => model.find({ userId }).populate("userId", "firstName lastName username");
 export const updateRecipe = (_id, recipe) =>
   model.updateOne({ _id: _id }, { $set: recipe });
+export const approveRecipe = (_id) =>
+  model.updateOne({ _id: _id }, { $set: { approved: true } });
 export const deleteRecipe = (_id) => model.deleteOne({ _id: _id });
 // export const findRecipesByIngredients = (ingredientList) =>
 //   model.find({ ingredients: { $in: ingredientList } });

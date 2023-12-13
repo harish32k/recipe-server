@@ -111,6 +111,15 @@ function RecipeRoutes(app) {
             res.status(400).json({ message: err.message });
         }
     };
+    const approveRecipe = async (req, res) => {
+        try {
+            const recipe = await local.approveRecipe(req.params._id);
+            res.json(recipe);
+        }
+        catch (err) {
+            res.status(400).json({ message: err.message });
+        }
+    };
     const findAllRecipes = async (req, res) => {
         try {
             const recipes = await local.findAllRecipes();
@@ -238,6 +247,7 @@ function RecipeRoutes(app) {
     app.put("/api/recipes/id/:_id", updateRecipe);
     app.delete("/api/recipes/id/:_id", deleteRecipe);
     app.get("/api/recipes/user/:userId", findUserRecipes);
+    app.put("/api/recipes/approve/:_id", approveRecipe);
 }
 
 export default RecipeRoutes;
