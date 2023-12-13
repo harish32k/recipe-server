@@ -137,7 +137,11 @@ function AuthRoutes(app) {
   app.delete("/api/auth/signout", authenticationMiddleware(), signout);
   app.post("/api/auth/signin", signin);
   app.post("/api/auth/token", token);
-  app.get("/api/auth/user", authenticationMiddleware(), fetchUserdetails);
+  app.get(
+    "/api/auth/user",
+    authenticationMiddleware(["ADMIN", "CHEF", "CONSUMER"]),
+    fetchUserdetails
+  );
   app.get(
     "/api/auth/verify",
     authenticationMiddleware(["ADMIN"]),
