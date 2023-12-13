@@ -57,6 +57,20 @@ function FollowerRoutes(app) {
       res.status(400).json({ message: error.message });
     }
   };
+  
+  const followingStatus = async (req, res) => {
+    try {
+      const isFollowing = await dao.isCurrentUserFollowingThisUser(
+        req.params.userId,
+        req.params.followId
+      );
+      //console.log(req.body);
+      //const status = {recipeId  : req.body.recipeId, userId : req.body.userId}
+      res.json({ following: isFollowing === 1 ? true : false });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  };
 
   app.post("/api/follow/user/:userId/following/:followId", addFollow);
   app.delete("/api/follow/user/:userId/following/:followId", removeFollow);
@@ -64,6 +78,7 @@ function FollowerRoutes(app) {
   app.get("/api/follow/count/followers/:userId", getFollowerCount);
   app.get("/api/follow/list/following/:userId", followingUsers);
   app.get("/api/follow/list/followers/:userId", followerUsers);
+  app.get("/api/follow/status/user/:userId/following/:followId", followingStatus);
 }
 
 export default FollowerRoutes;

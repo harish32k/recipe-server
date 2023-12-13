@@ -5,7 +5,8 @@ export const addFavouriteCategory = (userId, strCategory) =>
 export const removeFavouriteCategory = (userId, strCategory) =>
   model.deleteOne({ userId: userId, strCategory: strCategory });
 export const getCategoriesFavouritedByUser = (userId) => model.find({ userId });
-
+export const didUserFavouriteThisCategory = (userId, strCategory) =>
+  model.countDocuments({ userId, strCategory });
 // export const findRecipeById = (_id) => model.findOne({ _id: _id });
 // export const findRecipesByName = (inputString) =>
 //   model.find({ strMeal: { $regex: new RegExp(inputString, 'i') } });

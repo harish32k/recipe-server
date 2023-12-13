@@ -18,3 +18,5 @@ export const getFollowerPeople = (_id) =>
     .find({ followId: _id })
     .populate("userId", "firstName lastName username")
     .populate("followId", "firstName lastName username");
+export const isCurrentUserFollowingThisUser = (userId, followId) =>
+  model.countDocuments({ userId, followId });

@@ -35,6 +35,14 @@ function FavCategories(app) {
       res.status(400).json({ message: error.message });
     }
   };
+  const checkCategoryFavouritedByUser = async (req, res) => {
+    try {
+      const favourited = await dao.didUserFavouriteThisCategory(req.params.userId, req.params.category);
+      res.json({ strCategory : req.params.category, favourited: favourited === 1 ? true : false });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  };
 
   app.post(
     "/api/favcategory/user/:userId/category/:category",
@@ -45,6 +53,7 @@ function FavCategories(app) {
     removeFavouriteCategory
   );
   app.get("/api/favcategory/list/users/:userId", getCategoriesFavouritedByUser);
+  app.get("/api/favcategory/status/users/:userId/category/:category", checkCategoryFavouritedByUser);
 }
 
 export default FavCategories;
