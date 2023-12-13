@@ -1,6 +1,7 @@
 import * as dao from "../models/comments/dao.js";
 import * as recipesDao from "../models/recipes/dao.js";
 import * as mealDB from "../models/recipes/mealdbFunctions.js";
+import authenticationMiddleware from "../middleware/authenticationMiddleware.js";
 
 export async function recipeFindHelper(_id) {
   try {
@@ -89,9 +90,17 @@ function CommentRoutes(app) {
     }
   };
 
-  app.post("/api/comment/recipe", addComment);
+  app.post(
+    "/api/comment/recipe",
+    authenticationMiddleware(["CHEF", "ADMIN", "CONSUMER"]),
+    addComment
+  );
   app.get("/api/comment/recipe/:recipeId", getUserCommentsOnRecipe);
-  app.delete("/api/comment/recipe/commentId/:_id", removeComment);
+  app.delete(
+    "/api/comment/recipe/commentId/:_id",
+    authenticationMiddleware(["CHEF", "ADMIN", "CONSUMER"]),
+    removeComment
+  );
   app.get("/api/comment/count/recipe/:recipeId", getCommentsCountOnRecipe);
   app.get("/api/comment/user/:userId", getAllCommentsByUser);
 }

@@ -1,4 +1,5 @@
 import * as dao from "../models/favCategories/dao.js";
+import authenticationMiddleware from "../middleware/authenticationMiddleware.js";
 import * as recipesDao from "../models/recipes/dao.js";
 import * as mealDB from "../models/recipes/mealdbFunctions.js";
 
@@ -37,8 +38,14 @@ function FavCategories(app) {
   };
   const checkCategoryFavouritedByUser = async (req, res) => {
     try {
-      const favourited = await dao.didUserFavouriteThisCategory(req.params.userId, req.params.category);
-      res.json({ strCategory : req.params.category, favourited: favourited === 1 ? true : false });
+      const favourited = await dao.didUserFavouriteThisCategory(
+        req.params.userId,
+        req.params.category
+      );
+      res.json({
+        strCategory: req.params.category,
+        favourited: favourited === 1 ? true : false,
+      });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -46,14 +53,19 @@ function FavCategories(app) {
 
   app.post(
     "/api/favcategory/user/:userId/category/:category",
+    authenticationMiddleware(["ADMIN", "CHEF", "CONSUMER"]),
     addFavouriteCategory
   );
   app.delete(
     "/api/favcategory/user/:userId/category/:category",
+    authenticationMiddleware(["ADMIN", "CHEF", "CONSUMER"]),
     removeFavouriteCategory
   );
   app.get("/api/favcategory/list/users/:userId", getCategoriesFavouritedByUser);
-  app.get("/api/favcategory/status/users/:userId/category/:category", checkCategoryFavouritedByUser);
+  app.get(
+    "/api/favcategory/status/users/:userId/category/:category",
+    checkCategoryFavouritedByUser
+  );
 }
 
 export default FavCategories;

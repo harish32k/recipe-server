@@ -1,6 +1,5 @@
 import * as dao from "../models/users/dao.js";
-
-let currentUser = null;
+import authenticationMiddleware from "../middleware/authenticationMiddleware.js";
 
 function UserRoutes(app) {
   const createUser = async (req, res) => {};
@@ -26,8 +25,16 @@ function UserRoutes(app) {
   app.post("/api/users", createUser);
   app.get("/api/users", findAllUsers);
   app.get("/api/users/:userId", findUserById);
-  app.put("/api/users/:userId", updateUser);
-  app.delete("/api/users/:userId", deleteUser);
+  app.put(
+    "/api/users/:userId",
+    authenticationMiddleware(["ADMIN", "CHEF", "CONSUMER"]),
+    updateUser
+  );
+  app.delete(
+    "/api/users/:userId",
+    authenticationMiddleware(["ADMIN", "CHEF", "CONSUMER"]),
+    deleteUser
+  );
   app.post("/api/users/signup", signup);
   app.post("/api/users/account", account);
 }

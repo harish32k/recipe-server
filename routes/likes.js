@@ -1,6 +1,7 @@
 import * as dao from "../models/likes/dao.js";
 import * as recipesDao from "../models/recipes/dao.js";
 import * as mealDB from "../models/recipes/mealdbFunctions.js";
+import authenticationMiddleware from "../middleware/authenticationMiddleware.js";
 
 export async function recipeFindHelper(_id) {
   try {
@@ -98,8 +99,16 @@ function LikeRoutes(app) {
     }
   };
 
-  app.post("/api/like", addLike);
-  app.delete("/api/like/delete/recipe/:recipeId/user/:userId", removeLike);
+  app.post(
+    "/api/like",
+    authenticationMiddleware(["ADMIN", "CHEF", "CONSUMER"]),
+    addLike
+  );
+  app.delete(
+    "/api/like/delete/recipe/:recipeId/user/:userId",
+    authenticationMiddleware(["ADMIN", "CHEF", "CONSUMER"]),
+    removeLike
+  );
   app.get("/api/like/users/:recipeId", getLikedUsers);
   app.get("/api/like/count/:recipeId", getLikeCount);
   app.get("/api/like/liked-status/recipe/:recipeId/user/:userId", likedStatus);

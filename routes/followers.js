@@ -1,4 +1,5 @@
 import * as dao from "../models/followers/dao.js";
+import authenticationMiddleware from "../middleware/authenticationMiddleware.js";
 
 function FollowerRoutes(app) {
   const addFollow = async (req, res) => {
@@ -57,7 +58,7 @@ function FollowerRoutes(app) {
       res.status(400).json({ message: error.message });
     }
   };
-  
+
   const followingStatus = async (req, res) => {
     try {
       const isFollowing = await dao.isCurrentUserFollowingThisUser(
@@ -72,13 +73,24 @@ function FollowerRoutes(app) {
     }
   };
 
-  app.post("/api/follow/user/:userId/following/:followId", addFollow);
-  app.delete("/api/follow/user/:userId/following/:followId", removeFollow);
+  app.post(
+    "/api/follow/user/:userId/following/:followId",
+    authenticationMiddleware(["ADMIN", "CHEF", "CONSUMER"]),
+    addFollow
+  );
+  app.delete(
+    "/api/follow/user/:userId/following/:followId",
+    authenticationMiddleware(["ADMIN", "CHEF", "CONSUMER"]),
+    removeFollow
+  );
   app.get("/api/follow/count/following/:userId", getFollowingCount);
   app.get("/api/follow/count/followers/:userId", getFollowerCount);
   app.get("/api/follow/list/following/:userId", followingUsers);
   app.get("/api/follow/list/followers/:userId", followerUsers);
-  app.get("/api/follow/status/user/:userId/following/:followId", followingStatus);
+  app.get(
+    "/api/follow/status/user/:userId/following/:followId",
+    followingStatus
+  );
 }
 
 export default FollowerRoutes;

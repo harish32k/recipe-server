@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import * as userDao from "../models/users/dao.js";
 import * as tokenDao from "../models/refresh-tokens/dao.js";
 import jwt from "jsonwebtoken";
+import authenticationMiddleware from "../middleware/authenticationMiddleware.js";
 
 dotenv.config();
 
@@ -87,19 +88,6 @@ function AuthRoutes(app) {
     await tokenDao.deleteById(req.user._id);
     req.session.destroy();
     return res.sendStatus(204);
-    // const refreshToken = req.body.token;
-    // jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, async (err, user) => {
-    //   if (err) {
-    //     if (err.name === "TokenExpiredError") {
-    //       return res
-    //         .status(403)
-    //         .json({ message: "Token expired, User logged out" });
-    //     }
-    //     return res.sendStatus(403);
-    //   }
-    //   await tokenDao.deleteById(user._id);
-    //   return res.sendStatus(204);
-    // });
   };
 
   const verifyValidUser = async (req, res) => {
@@ -146,11 +134,15 @@ function AuthRoutes(app) {
     }
   };
 
-  app.delete("/api/auth/signout", authenticateTokenFromSession, signout);
+  app.delete("/api/auth/signout", authenticationMiddleware(), signout);
   app.post("/api/auth/signin", signin);
   app.post("/api/auth/token", token);
-  app.get("/api/auth/user", authenticateToken, fetchUserdetails);
-  app.get("/api/auth/verify", authenticateTokenFromSession, verifyValidUser);
+  app.get("/api/auth/user", authenticationMiddleware(), fetchUserdetails);
+  app.get(
+    "/api/auth/verify",
+    authenticationMiddleware(["ADMIN"]),
+    verifyValidUser
+  );
 }
 
 function generateAccessToken(user) {

@@ -4,6 +4,7 @@ import * as likesDao from "../models/likes/dao.js";
 import * as commentsDao from "../models/comments/dao.js";
 import * as favCatDao from "../models/favCategories/dao.js";
 import * as followDao from "../models/followers/dao.js";
+import authenticationMiddleware from "../middleware/authenticationMiddleware.js";
 
 import mongoose from "mongoose";
 
@@ -315,6 +316,7 @@ function RecipeRoutes(app) {
 
   const findRecipesByFavouriteCategoryRandom = async (req, res) => {
     try {
+      console.log("findRecipesByFavouriteCategoryRandom", req.params.userId);
       const overallRecipes = [];
 
       // Fetch all categories
@@ -381,16 +383,28 @@ function RecipeRoutes(app) {
     }
   };
 
-  app.post("/api/recipes", createRecipe);
+  app.post("/api/recipes", authenticationMiddleware(["CHEF"]), createRecipe);
   app.get("/api/recipes", findAllRecipes);
   app.get("/api/recipes/name/:inputString", findRecipesByName);
   app.get("/api/recipes/category/:category", findRecipesByCategorySimple);
   app.get("/api/recipes/area/:area", findRecipesByAreaSimple);
   app.get("/api/recipes/id/:_id", findRecipeById);
-  app.put("/api/recipes/id/:_id", updateRecipe);
-  app.delete("/api/recipes/id/:_id", deleteRecipe);
+  app.put(
+    "/api/recipes/id/:_id",
+    authenticationMiddleware(["CHEF"]),
+    updateRecipe
+  );
+  app.delete(
+    "/api/recipes/id/:_id",
+    authenticationMiddleware(["CHEF", "ADMIN"]),
+    deleteRecipe
+  );
   app.get("/api/recipes/user/:userId", findUserRecipes);
-  app.put("/api/recipes/approve/:_id", approveRecipe);
+  app.put(
+    "/api/recipes/approve/:_id",
+    authenticationMiddleware(["ADMIN"]),
+    approveRecipe
+  );
   app.get(
     "/api/recipes/random/category/simple/:category",
     findRecipesByCategoryRandom
