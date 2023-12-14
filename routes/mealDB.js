@@ -90,8 +90,8 @@ function MealRoutes(app) {
   app.get("/api/meal/name/:name", getMealByName);
   app.get("/api/meal/letter/:letter", getMealByFirstLetter);
   app.get("/api/meal/random", getRandomMeal);
-  app.get("/api/categories", getMealCategories);
-  app.get("/api/areas", getAreas);
+  app.get("/api/meal/categories", getMealCategories);
+  app.get("/api/meal/areas", getAreas);
   app.get("/api/filter/:category", filterByCategory);
   app.get("/api/meal/randomten", getRandomTenMeals);
   app.get("/api/meal/:id", getMealById);
