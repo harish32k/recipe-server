@@ -4,7 +4,8 @@ export const createRecipe = (recipe) =>
   model.create({ ...recipe, postedTime: Date.now() });
 export const findAllRecipes = () =>
   model.find().populate("userId", "firstName lastName username");
-export const findRecipeById = (_id) => model.findOne({ _id: _id }); //.populate("userId", "firstName lastName username");
+export const findRecipeById = (_id) =>
+  model.findOne({ _id: _id }).populate("userId", "firstName lastName username");
 export const findRecipesByName = (inputString) =>
   model
     .find({ strMeal: { $regex: new RegExp(inputString, "i") } })
