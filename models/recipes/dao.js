@@ -3,38 +3,40 @@ import model from "./model.js";
 export const createRecipe = (recipe) =>
   model.create({ ...recipe, postedTime: Date.now() });
 export const findAllRecipes = () =>
-  model.find().populate("userId", "firstName lastName username");
+  model.find({ approved: true }).populate("userId", "firstName lastName username");
 export const findRecipeById = (_id) =>
   model.findOne({ _id: _id }).populate("userId", "firstName lastName username");
 export const findRecipesByName = (inputString) =>
   model
-    .find({ strMeal: { $regex: new RegExp(inputString, "i") } })
+    .find({ strMeal: { $regex: new RegExp(inputString, "i") }, approved: true })
     .populate("userId", "firstName lastName username");
 export const findRecipesByCategory = (category) =>
   model
-    .find({ strCategory: category })
+    .find({ strCategory: category, approved: true })
     .populate("userId", "firstName lastName username");
 export const findRecipesByArea = (area) =>
   model
-    .find({ strArea: area })
+    .find({ strArea: area, approved: true })
     .populate("userId", "firstName lastName username");
 export const findRecipesByCategorySimple = (category) =>
   model
-    .find({ strCategory: category })
+    .find({ strCategory: category, approved: true })
     .select("_id strMeal strMealThumb postedTime approved userId source")
     .populate("userId", "firstName lastName username");
 export const findRecipesByAreaSimple = (area) =>
   model
-    .find({ strArea: area })
+    .find({ strArea: area, approved: true })
     .select("_id strMeal strMealThumb postedTime approved userId source")
     .populate("userId", "firstName lastName username");
 export const findRecipesByUserId = (userId) =>
-  model.find({ userId }).populate("userId", "firstName lastName username");
+  model.find({ userId, approved: true }).populate("userId", "firstName lastName username");
 export const updateRecipe = (_id, recipe) =>
   model.updateOne({ _id: _id }, { $set: recipe });
 export const approveRecipe = (_id) =>
   model.updateOne({ _id: _id }, { $set: { approved: true } });
 export const deleteRecipe = (_id) => model.deleteOne({ _id: _id });
+export const findUnapproved = () =>
+  model.find({ approved: false }).populate("userId", "firstName lastName username");
 
 export const findRecipesByCategoryRandom = async (category, n) => {
   try {

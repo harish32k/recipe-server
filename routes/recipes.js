@@ -383,6 +383,19 @@ function RecipeRoutes(app) {
     }
   };
 
+  const findUnapprovedRecipes = async (req, res) => {
+    try {
+      const recipes = await local.findUnapproved();
+      const mutableRecipes = convertToMutableObjects(recipes);
+      const result = await addLikesAndCommentsCount(mutableRecipes);
+      console.log(result);
+      res.json(result);
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ message: err.message });
+    }
+  };
+
   app.post("/api/recipes", authenticationMiddleware(["CHEF"]), createRecipe);
   app.get("/api/recipes", findAllRecipes);
   app.get("/api/recipes/name/:inputString", findRecipesByName);
@@ -418,6 +431,9 @@ function RecipeRoutes(app) {
     findRecipesByFavouriteCategoryRandom
   );
   app.get("/api/recipes/subscribed/user/:userId", findRecipesFromSubscriptions);
+  app.get("/api/recipes/unapproved",
+    authenticationMiddleware(["ADMIN"]), 
+    findUnapprovedRecipes);
 }
 
 export default RecipeRoutes;
