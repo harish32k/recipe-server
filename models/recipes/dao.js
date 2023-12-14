@@ -41,7 +41,7 @@ export const findUnapproved = () =>
 export const findRecipesByCategoryRandom = async (category, n) => {
   try {
     const filteredItemsQuery = model
-      .find({ strCategory: category })
+      .find({ strCategory: category, approved: true })
       .select(
         "_id strMeal strMealThumb postedTime approved userId source strCategory"
       )
@@ -67,7 +67,7 @@ export const findRecipesByCategoryRandom = async (category, n) => {
 
 export const findRecipesOfMultipleUsers = (usersIds) =>
   model
-    .find({ userId: { $in: usersIds } })
+    .find({ userId: { $in: usersIds, approved: true } })
     .select(
       "_id strMeal strMealThumb postedTime approved userId source strCategory"
     )
