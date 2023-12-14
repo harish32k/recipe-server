@@ -3,7 +3,9 @@ import model from "./model.js";
 export const createRecipe = (recipe) =>
   model.create({ ...recipe, postedTime: Date.now() });
 export const findAllRecipes = () =>
-  model.find({ approved: true }).populate("userId", "firstName lastName username");
+  model
+    .find({ approved: true })
+    .populate("userId", "firstName lastName username");
 export const findRecipeById = (_id) =>
   model.findOne({ _id: _id }).populate("userId", "firstName lastName username");
 export const findRecipesByName = (inputString) =>
@@ -29,14 +31,18 @@ export const findRecipesByAreaSimple = (area) =>
     .select("_id strMeal strMealThumb postedTime approved userId source")
     .populate("userId", "firstName lastName username");
 export const findRecipesByUserId = (userId) =>
-  model.find({ userId, approved: true }).populate("userId", "firstName lastName username");
+  model
+    .find({ userId, approved: true })
+    .populate("userId", "firstName lastName username");
 export const updateRecipe = (_id, recipe) =>
   model.updateOne({ _id: _id }, { $set: recipe });
 export const approveRecipe = (_id) =>
   model.updateOne({ _id: _id }, { $set: { approved: true } });
 export const deleteRecipe = (_id) => model.deleteOne({ _id: _id });
 export const findUnapproved = () =>
-  model.find({ approved: false }).populate("userId", "firstName lastName username");
+  model
+    .find({ approved: false })
+    .populate("userId", "firstName lastName username");
 
 export const findRecipesByCategoryRandom = async (category, n) => {
   try {
@@ -67,7 +73,7 @@ export const findRecipesByCategoryRandom = async (category, n) => {
 
 export const findRecipesOfMultipleUsers = (usersIds) =>
   model
-    .find({ userId: { $in: usersIds, approved: true } })
+    .find({ userId: { $in: usersIds }, approved: true })
     .select(
       "_id strMeal strMealThumb postedTime approved userId source strCategory"
     )
