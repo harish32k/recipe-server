@@ -2,8 +2,15 @@ import * as dao from "../models/users/dao.js";
 import authenticationMiddleware from "../middleware/authenticationMiddleware.js";
 
 function UserRoutes(app) {
-  const createUser = async (req, res) => {};
-  const deleteUser = async (req, res) => {};
+  const createUser = async (req, res) => {
+    try {
+      const user = req.body;
+      const response = await dao.createUser(user);
+      res.json(response);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  };
   const findAllUsers = async (req, res) => {
     const users = await dao.findAllUsers();
     res.json(users);
@@ -27,9 +34,8 @@ function UserRoutes(app) {
       res.status(400).json({ message: error.message });
     }
   };
-  const signup = async (req, res) => {};
-  const signout = (req, res) => {};
   const account = async (req, res) => {};
+  const deleteUser = async (req, res) => {};
 
   app.post("/api/users", createUser);
   app.get("/api/users", findAllUsers);
@@ -44,7 +50,6 @@ function UserRoutes(app) {
     authenticationMiddleware(["ADMIN", "CHEF", "CONSUMER"]),
     deleteUser
   );
-  app.post("/api/users/signup", signup);
   app.post("/api/users/account", account);
 }
 

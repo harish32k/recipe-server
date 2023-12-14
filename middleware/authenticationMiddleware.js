@@ -7,6 +7,7 @@ dotenv.config();
 const authenticationMiddleware = (roles = []) => {
   return async (req, res, next) => {
     const token = req.session["accessToken"];
+    console.log("accessToekn ", token);
     if (token == null) return res.status(401).json({ message: "Unauthorized" });
 
     try {
