@@ -17,7 +17,16 @@ function UserRoutes(app) {
       res.status(400).json({ message: error.message });
     }
   };
-  const updateUser = async (req, res) => {};
+  const updateUser = async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const user = req.body;
+      const response = await dao.updateUser(userId, user);
+      res.json(response);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  };
   const signup = async (req, res) => {};
   const signout = (req, res) => {};
   const account = async (req, res) => {};
